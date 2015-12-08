@@ -18,11 +18,11 @@ $install['Delete users table'] = 'DROP TABLE IF EXISTS `users`;';
 $install['Create users table'] = <<<SQL
 CREATE TABLE `users` (
   `id` int(11) unsigned NOT NULL AUTO_INCREMENT,
-  `username` varchar(40) NOT NULL DEFAULT \'\',
-  `password_hash` varchar(50) NOT NULL DEFAULT \'\',
+  `username` varchar(40) NOT NULL DEFAULT "",
+  `password_hash` varchar(50) NOT NULL DEFAULT "",
   `last_logged_in` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;';
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL;
 
 // Create products table
@@ -67,7 +67,7 @@ $install['Create products_at_orders table'] = <<<SQL
 CREATE TABLE `products_at_orders` (
 `product_id` int(11) NOT NULL,
   `order_id` int(11) NOT NULL,
-  `quantity` int(11) NOT NULL DEFAULT \'0\',
+  `quantity` int(11) NOT NULL DEFAULT '0',
   PRIMARY KEY (`product_id`,`order_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 SQL;

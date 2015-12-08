@@ -110,13 +110,18 @@ function get_full_cart_data()
     );
 }
 
+/**
+ * Возвращает "action" - действие, которое нужно выполнить
+ * согласно этому действию будет выполнен файл с соответствующим именем из папки controllers.
+ * "Action" задаётся GET-параметром.
+ */
 function get_current_action()
 {
-    // $action - действие, которое нужно выполнить
-    // согласно этому действию будет выполнен файл с соответствующим именем из папки controllers
     static $action = null;
 
     if ($action === null) {
+        // $action - действие, которое нужно выполнить
+        // согласно этому действию будет выполнен файл с соответствующим именем из папки controllers
         $action = filter_input(INPUT_GET, 'action');
 
         if ($action === null) {
@@ -132,28 +137,64 @@ function get_current_action()
     return $action;
 }
 
+/**
+ * Возвращает булево значение - авторизован ли пользователь на сайте.
+ */
+function is_logged_in()
+{
+    return isset($_SESSION['user_id']) && $_SESSION['user_id'] > 0;
+}
+
+/**
+ * Возвращает список элементов меню сайта.
+ */
 function get_menu_items()
 {
+    $is_logged_in = is_logged_in();
     $items = array(
         array(
             'title' => 'Домашняя страница',
-            'action' => 'homepage'
+            'action' => 'homepage',
+            'visible' => true,
         ),
-
         array(
-            'title' => 'Список товаров',
-            'action' => 'products'
+            'title' => 'Товары',
+            'action' => 'products',
+            'visible' => true,
         ),
-
+        array(
+            'title' => 'Регистрация',
+            'action' => 'signup',
+            'visible' => !$is_logged_in // элемент скрыт для авторизованных пользователей
+        ),
+        array(
+            'title' => 'Авторизация',
+            'action' => 'login',
+            'visible' => !$is_logged_in // элемент скрыт для авторизованных пользователей
+        ),
         array(
             'title' => 'Корзина',
-            'action' => 'cart'
+            'action' => 'cart',
+            'visible' => true,
         ),
     );
 
+    $action = get_current_action();
+
+    // для каждого элемента меню в цикле определим
     foreach ($items as &$item) {
+        // активен ли он
+        $item['is_active'] = ($action == $item['action']);
+        // и ссылку на раздел сайта, за который отвечает элемент меню
         $item['url'] = './index.php?action=' . $item['action'];
-        $item['is_active'] = (get_current_action() == $item['action']);
+    }
+    unset($item);
+
+    // уберём из массива элементы, которые не должны отображаться
+    foreach ($items as $k => $item) {
+        if (!$item['visible']) {
+            unset($items[$k]);
+        }
     }
 
     return $items;

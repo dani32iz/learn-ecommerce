@@ -12,14 +12,23 @@
     <?= $cart['quantity'] ?> товаров на сумму <?= $cart['cost'] ?>р.
 </div>
 
+<div>
+    <?php if (is_logged_in()): ?>
+        <p>Привет, <?= $_SESSION['user']['name'] ?>!</p>
+        <form action="./index.php?action=logout" method="POST">
+            <input type="submit" name="logout" value="Выйти">
+        </form>
+    <?php endif; ?>
+</div>
+
 <ul>
     <?php foreach (get_menu_items() as $menu_item): ?>
-        <li>
-            <?php if ($menu_item['is_active']): ?>
-                <b><?= $menu_item['title'] ?></b>
+        <?php if ($menu_item['is_active']): ?>
+            <li><b><?= $menu_item['title'] ?></b></li>
             <?php else: ?>
+            <li>
                 <a href="<?= $menu_item['url'] ?>"><?= $menu_item['title'] ?></a>
-            <?php endif; ?>
-        </li>
+            </li>
+        <?php endif; ?>
     <?php endforeach; ?>
 </ul>

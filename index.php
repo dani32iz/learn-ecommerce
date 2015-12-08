@@ -22,18 +22,7 @@ if (!isset($_SESSION['cart'])) {
     $_SESSION['cart'] = array();
 }
 
-// $action - действие, которое нужно выполнить
-// согласно этому действию будет выполнен файл с соответствующим именем из папки controllers
-$action = filter_input(INPUT_GET, 'action');
-
-if ($action === null) {
-    // homepage - значение по-умолчанию для $action
-    $action = 'homepage';
-} else {
-    // обезопасим $action, убрав все компоненты пути, кроме последнего, т.е.
-    // если $action = '../../hello', то $action станет 'hello'
-    $action = basename($action);
-}
+$action = get_current_action();
 
 $path_to_controller = CONTROLLERS_DIR . '/' . $action . '.php';
 

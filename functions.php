@@ -45,7 +45,7 @@ function get_cart_data()
     $products = db_select("SELECT id, price FROM products WHERE id IN ({$product_ids})");
 
     // Общая стоимость товаров в корзине
-    $total_cost  = 0;
+    $total_cost = 0;
 
     // Общее количество товаров в корзине
     $total_quantity = 0;
@@ -78,7 +78,7 @@ function get_full_cart_data()
     $products = db_select("SELECT id, title, price, quantity FROM products WHERE id IN ({$product_ids})");
 
     // Общая стоимость товаров в корзине
-    $total_cost  = 0;
+    $total_cost = 0;
 
     // Общее количество товаров в корзине
     $total_quantity = 0;
@@ -108,4 +108,53 @@ function get_full_cart_data()
         'total_quantity' => $total_quantity,
         'total_cost' => $total_cost,
     );
+}
+
+function get_current_action()
+{
+    // $action - действие, которое нужно выполнить
+    // согласно этому действию будет выполнен файл с соответствующим именем из папки controllers
+    static $action = null;
+
+    if ($action === null) {
+        $action = filter_input(INPUT_GET, 'action');
+
+        if ($action === null) {
+            // homepage - значение по-умолчанию для $action
+            $action = 'homepage';
+        } else {
+            // обезопасим $action, убрав все компоненты пути, кроме последнего, т.е.
+            // если $action = '../../hello', то $action станет 'hello'
+            $action = basename($action);
+        }
+    }
+
+    return $action;
+}
+
+function get_menu_items()
+{
+    $items = array(
+        array(
+            'title' => 'Домашняя страница',
+            'action' => 'homepage'
+        ),
+
+        array(
+            'title' => 'Список товаров',
+            'action' => 'products'
+        ),
+
+        array(
+            'title' => 'Корзина',
+            'action' => 'cart'
+        ),
+    );
+
+    foreach ($items as &$item) {
+        $item['url'] = './index.php?action=' . $item['action'];
+        $item['is_active'] = (get_current_action() == $item['action']);
+    }
+
+    return $items;
 }
